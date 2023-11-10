@@ -32,6 +32,6 @@ app.post(`/api/stuff`, (req, res, next) => {
 
 /*Pour POST  SIGNUP */ /*Route d'inscription */
 app.post(`/api/auth/signup`,userControllers.createUser );
-
+app.post('/api/auth/login', userControllers.loginUser);
 
 module.exports = app;

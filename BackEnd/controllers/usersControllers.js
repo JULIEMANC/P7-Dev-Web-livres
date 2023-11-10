@@ -5,10 +5,6 @@ exports.createUser = async (req, res) => {
 try {
     const { email, password } = req.body;
 
-    const existingUser = User.findOne({ email }); //voir si la personne est déjà enregistrée
-    if (existingUser) {
-      return res.status(400).json({ message: "Cet utilisateur existe déjà." });
-    }
     const hashedPassword = bcrypt.hash(password, 10); // hacher le mdp
    
     const newUser = new User({
@@ -24,3 +20,32 @@ try {
       .status(500)
       .json({ message: "Erreur lors de la création de l'utilisateur." });
   }};
+
+//*--------------------------------------------------------------------------------------//
+
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      return res.status(400).json({ message: "L'utilisateur n'existe pas." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Mot de passe incorrect." });
+    }
+
+    const token = jwt.sign({ userId: existingUser._id }, "votre_clé_secrète", {
+      expiresIn: "24h",
+    });
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error("Erreur lors de la connexion :", error);
+    res.status(500).json({ message: "Erreur lors de la connexion de l'utilisateur." });
+  }
+};
