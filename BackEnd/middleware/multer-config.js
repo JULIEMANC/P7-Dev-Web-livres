@@ -13,7 +13,7 @@ const storage =multer.diskStorage({
     filename:(req, file, callback)=>{
         const name= file.originalname.split('').join('_'); // Elimine probleme d'espace
 const extension =MIME_TYPES[file.mimetype];
-callback(null, name + Date.now() + '.'+extension); // Géneration unique name
+callback(null, name + Date.now() + '.'+extension); // Génerateur unique name
     }
 });
 

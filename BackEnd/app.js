@@ -4,6 +4,7 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config()
 const rootsUser=require("./roots/rootsUser");
+const rootsBook=require("./roots/rootsBook");
 
 
 
@@ -31,5 +32,6 @@ mongoose
 
 
 app.use(`/api/auth/`,rootsUser); // Dossier Roots
+app.use(`/api/books/`, rootsBook); //Dossier Books roots
 
 module.exports = app;
