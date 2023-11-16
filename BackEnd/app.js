@@ -1,17 +1,11 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt"); //pr hacher les mots de passe
-const userControllers = require("./controllers/usersControllers")
-mongoose
-  .connect(
-    "mongodb+srv://juliemancino38:fQt84jNzPLEkHrxp@clusterbook.nrx9bqn.mongodb.net/?retryWrites=true&w=majority"
-  )
-  .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch((error) => console.error("Connexion à MongoDB échouée !", error));
-
 const express = require("express");
 const app = express();
+const dotenv = require("dotenv");
+const rootsUser=require("./roots/rootsUser");
 
 app.use(express.json());
+dotenv.config()
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -21,17 +15,19 @@ app.use((req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD"
   );
   next();
 });
 
-app.post(`/api/stuff`, (req, res, next) => {
-  console.log(req.body);
-});
+mongoose
+  .connect(
+    process.env.MONGODB
+  )
+  .then(() => console.log("Connexion à MongoDB réussie !"))
+  .catch((error) => console.error("Connexion à MongoDB échouée !", error));
 
-/*Pour POST  SIGNUP */ /*Route d'inscription */
-app.post(`/api/auth/signup`,userControllers.createUser );
-app.post('/api/auth/login', userControllers.loginUser);
+
+app.use(`/api/auth/`,rootsUser); // Dossier Roots
 
 module.exports = app;

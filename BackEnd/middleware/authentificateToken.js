@@ -10,7 +10,6 @@ const authenticateToken = (req, res, next) => {
     pasww;
   }
   jwt.verify(token, "votre cles secur", (err, user) => {
-    console.log(user, "ok");
     if (err) {
       return res.status(403).json({ message: "Token non valide." });
     }

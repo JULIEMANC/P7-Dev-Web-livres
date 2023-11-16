@@ -154,3 +154,8 @@ nrx9bqn.mongodb.net/?retryWrites=true&w=majority`)
 
 15- création de nouveau dossier dans le  backend : 
 -models : book.js et users.js
+
+16-Installation de Dotenv sur le terminal > backend
+(Pour les informations confidentielles à cacher de Github (par exemple)car projet public )
+
+17-Intsallation de package jsonwebtoken : "npm install jsonwebtoken" et l'importer dans le dossier que j'utilise "const jwt =require(`jsonwebtoken`);"
