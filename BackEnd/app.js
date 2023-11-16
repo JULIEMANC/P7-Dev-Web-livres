@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
+dotenv.config()
 const rootsUser=require("./roots/rootsUser");
 
+
+
 app.use(express.json());
-dotenv.config()
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");

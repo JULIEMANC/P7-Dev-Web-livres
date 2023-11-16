@@ -4,14 +4,16 @@ const MIME_TYPES={
 'image/jpeg':'jpg',
 'image/png': 'png'
 };
+
+//Config du stockage pour les images.
 const storage =multer.diskStorage({
     destination:(req, file, callback)=>{
         callback(null, 'images')
     },
     filename:(req, file, callback)=>{
-        const name= file.originalname.split('').join('_'); // élimine probleme d'espace
+        const name= file.originalname.split('').join('_'); // Elimine probleme d'espace
 const extension =MIME_TYPES[file.mimetype];
-callback(null, name + Date.now() + '.'+extension); // generation unique name
+callback(null, name + Date.now() + '.'+extension); // Géneration unique name
     }
 });
 

@@ -3,6 +3,7 @@ const User = require("../models/users"); // Si que vous ayez un modèle User dé
 const bcrypt = require("bcrypt"); //pr hacher les mots de passe
 const jwt = require(`jsonwebtoken`);
 const dotenv = require("dotenv");
+require("dotenv").config();
 
 exports.createUser = async (req, res) => {
   try {
@@ -27,29 +28,32 @@ exports.createUser = async (req, res) => {
     console.error("Erreur lors de la création de l'utilisateur :", error);
     res
       .status(500)
-      .json({ message: "Erreur lors de la création de l'utilisateur." });
+      .json({ message: "Erreur lors de la création de l'utilisateur."});
   }
 };
 
 //*--------------------------------------------------------------------------------------//
-require("dotenv").config();
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({ message: "Veuillez remplir tous les champs du formulaire." });
+    }
+
     const existingUser = await User.findOne({ email });
 
     if (!existingUser) {
-      return res.status(400).json({ message: "L'utilisateur n'existe pas." });
+      return res.status(400).json({ message: "Email ou mot de passe incorrect.", error: "Email ou mot de passe incorrect." });
     }
-    console.log("ok");
+
     const isPasswordValid = await bcrypt.compare(
       password,
       existingUser.password
     );
 
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Mot de passe incorrect." });
+      return res.status(400).json({ message: "Email ou mot de passe incorrect.", error: "Email ou mot de passe incorrect." });
     }
 
     const token = jwt.sign(
@@ -60,11 +64,11 @@ exports.loginUser = async (req, res) => {
       }
     );
 
-    res.status(200).json({ token });
+    return res.status(200).json({ token });
   } catch (error) {
     console.error("Erreur lors de la connexion :", error);
     res
       .status(500)
-      .json({ message: "Erreur lors de la connexion de l'utilisateur." });
+      .json({ message: "Erreur lors de la connexion de l'utilisateur.", error: error.message });
   }
 };

@@ -1,7 +1,8 @@
 const User = require("../models/users");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto"); // generateur de clefs secrete
-const secretKey = crypto.randomBytes(32).toString("hex");
+// const crypto = require("crypto"); // generateur de clefs secrete
+// const secretKey = crypto.randomBytes(32).toString("hex");
+
 const authenticateToken = (req, res, next) => {
   const token = req.header("Authorization");
 
