@@ -31,7 +31,6 @@ exports.createUser = async (req, res) => {
       .json({ message: "Erreur lors de la création de l'utilisateur."});
   }
 };
-
 //*--------------------------------------------------------------------------------------//
 exports.loginUser = async (req, res) => {
   try {

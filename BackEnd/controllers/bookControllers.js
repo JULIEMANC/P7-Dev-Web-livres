@@ -3,19 +3,22 @@ const multerConf = require(`../middleware/multer-config`);
 
 exports.createBook = async (req, res) => {
   try {
- //const bodyBook = JSON.parse(req.body);
+    const bodyBook = JSON.parse(req.body.book);
     // ajouter .book ds parenthèse apres
-const bodyBook = req.body;
-    //const yearRegExp =/^(145[5-9]|14[6-9][0-9]|1[5-9][0-9]{2}|20[01][0-9]|202[0-4])$/;
-    //const year = bodyBook.year.toString();
+    //const bodyBook = req.body;
+    const yearRegExp = /^(?:2[\d]{3}|1[\d]{3}|[\d]{3}|[\d]{2}|[\d]{1})$/;
+    const year = bodyBook.year.toString();
 
-    //   if (!yearRegExp.test(year)) {
-    //     return res.status(400).json("Année non valide !");
-    //   }
+    if (!yearRegExp.test(year)) {
+      return res.status(400).json("Année non valide !");
+    }
+    if (!req.file) {
+      return res.status(400).json("Veuillez télécharger une image !");
+    }
+const imageUrl= `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
     const newBook = new book({
-     ...bodyBook,
-
-      // imageUrl: req.file ? req.file.path : null,
+      ...bodyBook,
+      imageUrl: imageUrl,
     });
 
     const savedBook = await newBook.save();

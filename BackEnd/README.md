@@ -161,3 +161,5 @@ nrx9bqn.mongodb.net/?retryWrites=true&w=majority`)
 17-Intsallation de package jsonwebtoken : "npm install jsonwebtoken" et l'importer dans le dossier que j'utilise "const jwt =require(`jsonwebtoken`);"
 
 18-Installation multer sur le terminal "npm install multer"
+
+19-Installation de sharp pour la compression des images "npm install express multer sharp"
