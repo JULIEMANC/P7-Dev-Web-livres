@@ -65,17 +65,66 @@ exports.searchBook = async (req, res) => {//clique et recherche livre via ID
 };
 
 
+
 // exports.updateBook = async (req, res) => {
-  //   try {
-    //     console.log("choco");
-    //   } catch (error) {
-      //     console.error(error);
-      //     res.status(500).json("Erreur lors de la mise à jour du livre.");
-      //   }
-      // };
+//   try {
+//     const bookId = req.params.id;
+//     const foundBook = await book.findById(bookId).exec();
+
+//     if (!foundBook) {
+//       return res.status(404).json("Livre non trouvé.");
+//     }
+//     let imageUrl = foundBook.imageUrl; // Declare imageUrl using let
+
+//     if (req.file) {
+//       const newImageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.name}`;
+//       fs.unlinkSync(req.file.path);
+//       imageUrl = newImageUrl;
+//     }
+//     const bodyBookJson = req.body.book; 
+//     const bodyBook = JSON.parse(bodyBookJson);
+//     foundBook.title = bodyBook.title;
+//     foundBook.author = bodyBook.author;
+//     foundBook.genre = bodyBook.genre;
+//     foundBook.year = bodyBook.year;
+
+//     const updatedBook = await foundBook.save();
+//     res.status(200).json(updatedBook);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json("Erreur lors de la mise à jour du livre.");
+//   }
+// };
+// exports.updateBook = async (req, res) => {
+//  const bodyBook = JSON.parse(req.body.book); // Supprime le format d'image type mime de base dans le dossier images
+//     const bookId= req.params.id;
+//     const foundBook= await book.findById(bookId); 
+    
+//     if (req.file) {
+//     const newImageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.name}`;
+//     fs.
+    
+// unlinkSync(req.file.path);
+
+
+// foundBook.imageUrl = newImageUrl;}
+//     foundBook.title = bodyBook.title;
+//         foundBook.author = bodyBook.author;
+//         foundBook.genre =bodyBook.genre;
+//     foundBook.year = bodyBook.year;
+
+//     const updatedBook = await foundBook.save();
+  
+//     try {
+//       res.status(200).json(updatedBook);
+//       } catch (error) {
+//           console.error(error);
+//           res.status(500).json("Erreur lors de la mise à jour du livre.");
+//         }
+//       };
       
-      // exports.deleteBook = async (req, res) => {
-        //   try {
+//       exports.deleteBook = async (req, res) => {
+//           try {
 //     console.log("julie");
 //   } catch (error) {
 //     console.error(error);

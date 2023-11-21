@@ -40,7 +40,7 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: "Veuillez remplir tous les champs du formulaire." });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser= await User.findOne({ email });
 
     if (!existingUser) {
       return res.status(400).json({ message: "Email ou mot de passe incorrect.", error: "Email ou mot de passe incorrect." });
@@ -56,16 +56,16 @@ exports.loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: existingUser._id },
+      { userId: existingUser[0] },
       process.env.JWT_SECRET,
       {
         expiresIn: "24h",
       }
     );
 
-    const response = {"userId": existingUser._id,
+    const response = {"userId": existingUser[0],
                       "token": token}
-console.log(existingUser, "okay")
+
     return res.status(200).json(response);
   } catch (error) {
     console.error("Erreur lors de la connexion :", error);
