@@ -1,5 +1,6 @@
 const book = require("../models/book");
 const multerConf = require(`../middleware/multer-config`);
+const fs = require("fs");
 
 exports.createBook = async (req, res) => {
   try {
@@ -14,14 +15,16 @@ exports.createBook = async (req, res) => {
       return res.status(400).json("Veuillez télécharger une image !");
     }
     const imageUrl = `${req.protocol}://${req.get("host")}/images/${
-      req.file.filename
+      req.file.name
     }`;
+
+    fs.unlinkSync(req.file.path);
     const newBook = new book({
       ...bodyBook,
       imageUrl: imageUrl,
     });
 
-    const savedBook = await newBook.save();
+ const savedBook = await newBook.save();
     res.status(201).json(savedBook);
   } catch (error) {
     console.error(error);

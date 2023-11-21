@@ -24,11 +24,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage }).single("image");
 const resizeImage = (req, res, next) => {
-  const { originalname } = req.file;
+  const { originalname,path } = req.file;
   const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
   const filename = `${originalname.split(".")[0]}_${uniqueName}.webp`;
   
-  sharp(req.file.path)
+  sharp(path)
     .resize(400, 500, { fit: "inside" })
     .webp({ quality: 80 })
     .toFile(`images/${filename}`)
