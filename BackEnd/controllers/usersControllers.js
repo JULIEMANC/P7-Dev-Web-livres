@@ -63,7 +63,10 @@ exports.loginUser = async (req, res) => {
       }
     );
 
-    return res.status(200).json({ token });
+    const response = {"userId": existingUser._id,
+                      "token": token}
+console.log(existingUser, "okay")
+    return res.status(200).json(response);
   } catch (error) {
     console.error("Erreur lors de la connexion :", error);
     res

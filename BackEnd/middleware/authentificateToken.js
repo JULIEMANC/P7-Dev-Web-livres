@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-require("dotenv").config();
+dotenv.config();
+
+
 // const crypto = require("crypto"); // generateur de clefs secrete
 // const secretKey = crypto.randomBytes(32).toString("hex");
 // const authenticateToken = (req, res, next) => {
@@ -22,16 +24,15 @@ require("dotenv").config();
 
 // module.exports = authenticateToken;
 
-module.exports=(req, res, next)=>{
-  try{
-const token = req.headers.authorization.split(' ')[1];
-const decodeToken = jwt.verify(token, process.env.JWT_SECRET);
-const userId = decodeToken.userId;
-
-req.auth={userId : userId};
-next();
-
-  }catch(err){
-res.status(403).json({message : "Token non valide.", err});
+module.exports = (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodeToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodeToken.userId;
+    req.userId= userId;
+  //console.log(req.body.book.userId)
+    next();
+  } catch (err) {
+    res.status(403).json({ message: "Token non valide.", err });
   }
-}
+};

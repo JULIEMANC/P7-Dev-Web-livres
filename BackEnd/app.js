@@ -5,8 +5,7 @@ const dotenv = require("dotenv");
 dotenv.config()
 const rootsUser=require("./roots/rootsUser");
 const rootsBook=require("./roots/rootsBook");
-
-
+const path = require('path');
 
 app.use(express.json());
 
@@ -34,4 +33,5 @@ mongoose
 app.use(`/api/auth/`,rootsUser); // Dossier Roots
 app.use(`/api/books/`, rootsBook); //Dossier Books roots
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 module.exports = app;
