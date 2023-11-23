@@ -2,8 +2,6 @@
 const User = require("../models/users"); // Si que vous ayez un modèle User défini
 const bcrypt = require("bcrypt"); //pr hacher les mots de passe
 const jwt = require(`jsonwebtoken`);
-const dotenv = require("dotenv");
-require("dotenv").config();
 
 exports.createUser = async (req, res) => {
   try {
@@ -56,14 +54,14 @@ exports.loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: existingUser[0] },
+      { userId: existingUser._id },
       process.env.JWT_SECRET,
       {
         expiresIn: "24h",
       }
     );
 
-    const response = {"userId": existingUser[0],
+    const response = {"userId": existingUser._id,
                       "token": token}
 
     return res.status(200).json(response);

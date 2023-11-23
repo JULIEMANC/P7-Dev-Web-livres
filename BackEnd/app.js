@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
-dotenv.config()
 const rootsUser=require("./roots/rootsUser");
 const rootsBook=require("./roots/rootsBook");
 const path = require('path');
 
+dotenv.config()
 app.use(express.json());
 
 app.use((req, res, next) => {
