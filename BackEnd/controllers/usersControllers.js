@@ -1,4 +1,3 @@
-/*Création d'un espace utilisateur*/
 const User = require("../models/users"); // Si que vous ayez un modèle User défini
 const bcrypt = require("bcrypt"); //pr hacher les mots de passe
 const jwt = require(`jsonwebtoken`);
@@ -12,7 +11,6 @@ exports.createUser = async (req, res) => {
         .status(400)
         .json({ message: "Veuillez entrez un email ou/et mot de passe" });
     }
-    // console.log(email + "  " + password)
     const hashedPassword = await bcrypt.hash(password, 10); // hacher le mdp
 
     const users = new User({
@@ -20,7 +18,7 @@ exports.createUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    users.save(); // enregistre l'utilisateur ds la base de données
+    users.save();
     res.status(201).json({ message: "Utilisateur créé avec succès." });
   } catch (error) {
     console.error("Erreur lors de la création de l'utilisateur :", error);
@@ -37,13 +35,13 @@ exports.loginUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: "Veuillez remplir tous les champs du formulaire." });
     }
-
+// Recherche de l'utilisateur dans la base de données par son email
     const existingUser= await User.findOne({ email });
 
     if (!existingUser) {
       return res.status(400).json({ message: "Email ou mot de passe incorrect.", error: "Email ou mot de passe incorrect." });
     }
-
+ // Vérification de la validité du mot de passe en comparant avec celui enregistré
     const isPasswordValid = await bcrypt.compare(
       password,
       existingUser.password

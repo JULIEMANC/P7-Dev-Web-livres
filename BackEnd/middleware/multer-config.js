@@ -17,14 +17,17 @@ const storage = multer.diskStorage({
     const name = file.originalname.split(" ").join("_"); // Elimine probleme d'espace
     const extension = MIME_TYPES[file.mimetype];
     const uniqueFilename =
-      name.split(".")[0] + "-" + Date.now() + "." + extension;
+    name.split(".")[0] + "-" + Date.now() + "." + extension;
     callback(null, uniqueFilename);
   },
 });
 
 const upload = multer({ storage }).single("image");
 const resizeImage = (req, res, next) => {
-  const { originalname,path } = req.file;
+  if(!req.file){
+    return next();
+  }
+ const { originalname,path } = req.file;
   const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
   const filename = `${originalname.split(".")[0]}_${uniqueName}.webp`;
   

@@ -9,7 +9,7 @@ router.get(`/`, bookControllers.readAllBook);
 router.get(`/bestrating`,bookControllers.bestRating);
 router.get(`/:id`, bookControllers.searchBook); 
 
-router.put(`/:id`, bookControllers.updateBook);
+router.put(`/:id`,authenticateToken, upload,resizeImage,bookControllers.updateBook);
 
 router.delete(`/:id`, bookControllers.deleteBook);
 router.post(`/:id/rating`, bookControllers.gradeBook);
