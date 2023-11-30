@@ -68,8 +68,8 @@ exports.searchBook = async (req, res) => {
   }
 };
 
-
-exports.updateBook = async (req, res) => { //le mien
+exports.updateBook = async (req, res) => {
+  //le mien
   try {
     const bookId = req.params.id;
     const foundBook = await book.findById(bookId).exec();
@@ -77,35 +77,37 @@ exports.updateBook = async (req, res) => { //le mien
     if (!foundBook) {
       return res.status(404).json("Livre non trouvé.");
     }
-    let imageUrl = foundBook.imageUrl; // Declare imageUrl using let
-
-    if (req.file) {
-      const newImageUrl = `${req.protocol}://${req.get("host")}/images/${
-        req.file.name
-      }`;
-      fs.unlinkSync(req.file.path);
-      imageUrl = newImageUrl;
+    const { title, author, genre, year } = req.body;
+    if (title !== undefined) {
+      foundBook.title = title;
     }
-    //const imagePath = boook.imageUrl.split("/images/")[1];
-    //       fs.unlink(`images/${imagePath}`, () => {
-    //         book
-    //           .updateOne(
-    //             { _id: req.params.id },
-    //             { ...bookObject, _id: req.params.id }
-    //           )
-    //           .then(res.status(200).json({ message: "Livre modifié! " }))
-    //           .catch((error) => res.status(400).json({ error }));
-    //       });
-    const bodyBook = req.body;
-    const { title, author, genre, year } = bodyBook;
+    if (author !== undefined) {
+      foundBook.author = author;
+    }
+    if (genre !== undefined) {
+      foundBook.genre = genre;
+    }
+    if (year !== undefined) {
+      foundBook.year = year;
+    }
+  
+  //  if (req.file){
+    const newImageUrl=undefined
+  //  const newImageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.name}`;
+  //   foundBook.imageUrl = newImageUrl;
+  //  }
+    const updateBook = await foundBook.save();
+    //const newImageUrl = req.file.name.split("/images/")[0];
+    //req.file.name = new image
+    fs.unlink(`images/${newImageUrl}`, () => {
+      book
+      .updateOne({ _id: req.params.id }, { ...bookId, _id: req.params.id })
+     // .then(console.log(foundBook))
+   .then(res.status(200).json(updateBook))
+      // .then(res.status(200).json((updateBook),{ message: "Livre modifié! " }))
+      .catch((error) => res.status(400).json({ error }));
+    });
 
-    foundBook.title = title;
-    foundBook.author = author;
-    foundBook.genre = genre;
-    foundBook.year = year;
-
-    const updatedBook = await foundBook.save();
-    res.status(200).json(updatedBook);
   } catch (error) {
     console.error(error);
     res.status(500).json("Erreur lors de la mise à jour du livre.");
@@ -113,8 +115,8 @@ exports.updateBook = async (req, res) => { //le mien
 };
 
 exports.deleteBook = async (req, res) => {
+  const bookId = req.params.id;
   try {
-    const bookId = req.params.id;
     const deleteBook = await book.findByIdAndDelete(bookId);
 
     if (!deleteBook) {
@@ -128,11 +130,19 @@ exports.deleteBook = async (req, res) => {
     );
     fs.unlinkSync(imagePath);
 
-    // res.status(200).json({ message: "Livre supprimé avec succès", deleteBook });
+    // Supprimer le livre de la base de données
+    await book.deleteOne({ _id: bookId });
+
+    res.status(200).json({ message: "Livre supprimé avec succès" });
   } catch (error) {
     console.error(error);
-    res.status(500).json("Erreur lors de la suppression du livre.");
+    return res.status(500).json({ message: "Une erreur est survenue", error });
   }
+
+  // Ajouter une redirection du côté client après un court délai (par exemple, 1 seconde)
+  setTimeout(() => {
+    res.redirect("/");
+  }, 1000);
 };
 
 exports.bestRating = async (req, res) => {
