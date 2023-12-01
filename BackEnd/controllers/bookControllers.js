@@ -23,7 +23,6 @@ exports.createBook = async (req, res) => {
     }`;
 
     fs.unlinkSync(req.file.path); // supprimer image format mimetype de base dans le dossier images
-
     const newBook = new book({
       ...bodyBook,
       imageUrl: imageUrl,
@@ -76,7 +75,7 @@ exports.updateBook = async (req, res) => {
     if (!foundBook) {
       return res.status(404).json("Livre non trouvé.");
     }
-    const oldImagePath =`images/${foundBook.imageUrl.split("/images/")[1]}`;
+    const oldImagePath = `images/${foundBook.imageUrl.split("/images/")[1]}`;
 
     const { title, author, genre, year } = req.body;
     if (title !== undefined) {
@@ -91,9 +90,10 @@ exports.updateBook = async (req, res) => {
     if (year !== undefined) {
       foundBook.year = year;
     }
-
     if (req.file) {
-      const newImageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.name}`;
+      const newImageUrl = `${req.protocol}://${req.get("host")}/images/${
+        req.file.name
+      }`;
       foundBook.imageUrl = newImageUrl;
 
       if (fs.existsSync(oldImagePath)) {
@@ -101,15 +101,14 @@ exports.updateBook = async (req, res) => {
       }
     }
     const updateBook = await foundBook.save();
-
     res.status(200).json(updateBook);
     fs.unlinkSync(req.file.path);
-
   } catch (error) {
     console.error(error);
     res.status(500).json("Erreur lors de la mise à jour du livre.");
   }
 };
+
 exports.deleteBook = async (req, res) => {
   const bookId = req.params.id;
   try {
@@ -124,8 +123,11 @@ exports.deleteBook = async (req, res) => {
       "../images",
       deleteBook.imageUrl.split("/images/")[1]
     );
-    fs.unlinkSync(imagePath);
-
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    } else {
+      console.warn("File not found:", imagePath);
+    }
     // Supprimer le livre de la base de données
     await book.deleteOne({ _id: bookId });
 
@@ -134,15 +136,9 @@ exports.deleteBook = async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: "Une erreur est survenue", error });
   }
-
-  // Ajouter une redirection du côté client après un court délai (par exemple, 1 seconde)
-  setTimeout(() => {
-    res.redirect("/");
-  }, 1000);
 };
 
-exports.bestRating = async (req, res) => {
-  //3 livres les mieux notés
+exports.bestRating = async (req, res) => {//3 livres les mieux notés
   try {
     const books = await book.find().sort({ averageRating: -1 }).limit(3);
     res.status(200).json(books);
@@ -178,7 +174,6 @@ exports.gradeBook = async (req, res) => {
 
     // Mettre à jour la moyenne des notes dans le livre
     updatedBook.averageRating = noteRat;
-
     const savedBook = await updatedBook.save();
 
     res.status(200).json(savedBook);
