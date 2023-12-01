@@ -69,7 +69,6 @@ exports.searchBook = async (req, res) => {
 };
 
 exports.updateBook = async (req, res) => {
-  //le mien
   try {
     const bookId = req.params.id;
     const foundBook = await book.findById(bookId).exec();
@@ -77,6 +76,8 @@ exports.updateBook = async (req, res) => {
     if (!foundBook) {
       return res.status(404).json("Livre non trouvé.");
     }
+    const oldImagePath =`images/${foundBook.imageUrl.split("/images/")[1]}`;
+
     const { title, author, genre, year } = req.body;
     if (title !== undefined) {
       foundBook.title = title;
@@ -90,30 +91,25 @@ exports.updateBook = async (req, res) => {
     if (year !== undefined) {
       foundBook.year = year;
     }
-  
-  //  if (req.file){
-    const newImageUrl=undefined
-  //  const newImageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.name}`;
-  //   foundBook.imageUrl = newImageUrl;
-  //  }
+
+    if (req.file) {
+      const newImageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.name}`;
+      foundBook.imageUrl = newImageUrl;
+
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
     const updateBook = await foundBook.save();
-    //const newImageUrl = req.file.name.split("/images/")[0];
-    //req.file.name = new image
-    fs.unlink(`images/${newImageUrl}`, () => {
-      book
-      .updateOne({ _id: req.params.id }, { ...bookId, _id: req.params.id })
-     // .then(console.log(foundBook))
-   .then(res.status(200).json(updateBook))
-      // .then(res.status(200).json((updateBook),{ message: "Livre modifié! " }))
-      .catch((error) => res.status(400).json({ error }));
-    });
+
+    res.status(200).json(updateBook);
+    fs.unlinkSync(req.file.path);
 
   } catch (error) {
     console.error(error);
     res.status(500).json("Erreur lors de la mise à jour du livre.");
   }
 };
-
 exports.deleteBook = async (req, res) => {
   const bookId = req.params.id;
   try {
