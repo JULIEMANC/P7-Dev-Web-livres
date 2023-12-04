@@ -9,8 +9,6 @@ const validatorUser=(req, res, next)=>{
     }
 
     next();
+    //Test verifie si la valeur de l'email ou mot de passe corresponde aux models definit
 }
-
-//Test verifie si la valeur de l'email ou mot de passe corresponde aux models definit
-
 module.exports = validatorUser;

@@ -71,12 +71,13 @@ exports.updateBook = async (req, res) => {
   try {
     const bookId = req.params.id;
     const foundBook = await book.findById(bookId).exec();
-
+    const yearRegExp = /^(?:2[\d]{3}|1[\d]{3}|[\d]{3}|[\d]{2}|[\d]{1})$/;
+    
     if (!foundBook) {
       return res.status(404).json("Livre non trouvé.");
     }
     const oldImagePath = `images/${foundBook.imageUrl.split("/images/")[1]}`;
-
+    
     const { title, author, genre, year } = req.body;
     if (title !== undefined) {
       foundBook.title = title;
@@ -89,6 +90,10 @@ exports.updateBook = async (req, res) => {
     }
     if (year !== undefined) {
       foundBook.year = year;
+      if (!yearRegExp.test(year)) {
+        return res.status(400).json({message: "Année non valide !"});
+      }
+      
     }
     if (req.file) {
       const newImageUrl = `${req.protocol}://${req.get("host")}/images/${
@@ -102,7 +107,9 @@ exports.updateBook = async (req, res) => {
     }
     const updateBook = await foundBook.save();
     res.status(200).json(updateBook);
-    fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path) {
+      fs.unlinkSync(req.file.path);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json("Erreur lors de la mise à jour du livre.");
@@ -138,7 +145,8 @@ exports.deleteBook = async (req, res) => {
   }
 };
 
-exports.bestRating = async (req, res) => {//3 livres les mieux notés
+exports.bestRating = async (req, res) => {
+  //3 livres les mieux notés
   try {
     const books = await book.find().sort({ averageRating: -1 }).limit(3);
     res.status(200).json(books);
